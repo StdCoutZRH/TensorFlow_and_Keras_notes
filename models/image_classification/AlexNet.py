@@ -6,12 +6,21 @@
 
 """
 
+# set gpu and env
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL']='3'
+os.environ['CUDA_VISIBLE_DEVICES']='0'
+
 import tensorflow as tf
+phy_gpus = tf.config.experimental.list_physical_devices('GPU')
+for gpu in phy_gpus:
+    tf.config.experimental.set_memory_growth(gpu,True)
+
 from tensorflow.keras.layers import *
 from tensorflow.keras.models import *
 from tensorflow.keras.optimizers import *
 from tensorflow.keras.utils import *
-import os
+
 
 def AlexNet(input_shape=(224,224,3),classes=1000,include_top=True,weights=None):
 
@@ -73,18 +82,11 @@ def AlexNet(input_shape=(224,224,3),classes=1000,include_top=True,weights=None):
     return model
 
 if __name__=='__main__':
-    
-    # set gpu and env
-    os.environ['TF_CPP_MIN_LOG_LEVEL']='3'
-    #os.environ['CUDA_VISIBLE_DEVICES']='0'
-    import tensorflow as tf 
-    phy_gpus = tf.config.experimental.list_physical_devices('GPU')
-    for gpu in phy_gpus:
-        tf.config.experimental.set_memory_growth(gpu,True)
-    
-    # test
+
+    # test model
     model = AlexNet(weights=None,input_shape=(224,224,3),include_top=True,classes=1000)
     model.summary()
+
     #   =================================================================
     #   Total params: 62,378,676
     #   Trainable params: 62,378,510
