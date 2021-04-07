@@ -48,12 +48,12 @@ def AlexNet(input_shape=(224,224,3),classes=1000,include_top=True,weights=None):
     # first conv layer
     net = Conv2D(filters=96,kernel_size=11,strides=4,padding='valid',activation='relu',name='conv_1')(net)   #(None,227,227,3)->(None,55,55,96)
     net = BatchNormalization(axis=1)(net)
-    net = MaxPooling2D(pool_size=3,strides=2,padding='same',name='maxpool_1')(net)  #(None,55,55,96)->(None,28,28,96)
+    net = MaxPool2D(pool_size=3,strides=2,padding='valid',name='maxpool_1')(net)  #(None,55,55,96)->(None,27,27,96)
 
     # second conv layer
-    net = Conv2D(filters=256,kernel_size=5,strides=1,padding='same',activation='relu',name='conv_2')(net)   #(None,28,28,96)->(None,,28,28,256)
+    net = Conv2D(filters=256,kernel_size=5,strides=1,padding='same',activation='relu',name='conv_2')(net)   #(None,27,27,96)->(None,,27,27,256)
     net = BatchNormalization(axis=1)(net)
-    net = MaxPooling2D(3,2,padding='valid',name='maxpool_2')(net)   #(None,28,28,256)->(None,13,13,256)
+    net = MaxPool2D(3,2,padding='valid',name='maxpool_2')(net)   #(None,27,27,256)->(None,13,13,256)
 
     # third conv layer
     net = Conv2D(filters=384,kernel_size=3,strides=1,padding='same',activation='relu',name='conv_3')(net)   #(None,13,13,256)->(None,13,13,384)
@@ -62,7 +62,7 @@ def AlexNet(input_shape=(224,224,3),classes=1000,include_top=True,weights=None):
     net = Conv2D(filters=384,kernel_size=3,strides=1,padding='same',activation='relu',name='conv_4')(net)   #(None,13,13,384)->(None,13,13,384)
     net = Conv2D(filters=256,kernel_size=3,strides=1,padding='same',activation='relu',name='conv_5')(net)   #(None,13,13,384)->(None,13,13,256)
 
-    net = MaxPooling2D(3,2,padding='valid',name='maxpool3')(net)    #(None,13,13,256)->(None,6,6,256)
+    net = MaxPool2D(3,2,padding='valid',name='maxpool3')(net)    #(None,13,13,256)->(None,6,6,256)
     
     if include_top:
         net = Flatten(name='flatten')(net)  #(None,6,6,256)->(None, 9216) 
@@ -88,6 +88,6 @@ if __name__=='__main__':
     model.summary()
 
     #   =================================================================
-    #   Total params: 62,378,676
-    #   Trainable params: 62,378,510
-    #   Non-trainable params: 166
+    #   Total params: 62,378,672
+    #   Trainable params: 62,378,508
+    #   Non-trainable params: 164
