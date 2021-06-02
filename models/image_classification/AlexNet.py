@@ -11,15 +11,19 @@ from tensorflow.keras.models import *
 from tensorflow.keras.optimizers import *
 from tensorflow.keras.utils import *
 
-
+# Build AlexNet with Keras Functional API
 def AlexNet(input_shape=(224,224,3),classes=1000,include_top=True,weights=None):
 
     # check weights path
     if weights != None and not os.path.exists(weights):
         raise ValueError("the input of weights is not valid")
 
-    input_img = tf.keras.Input(shape=input_shape,dtype=tf.float32)
-    net = ZeroPadding2D(padding=((1,2),(1,2)))(input_img)
+    # check include_top and classes
+    if include_top and classes!=1000:
+        raise ValueError("if include_top=True,classes should be 1000.")
+
+    input_ = tf.keras.Input(shape=input_shape,dtype=tf.float32)
+    net = ZeroPadding2D(padding=((1,2),(1,2)))(input_)
     
     # first conv layer
     net = Conv2D(filters=96,kernel_size=11,strides=4,padding='valid',activation='relu',name='conv_1')(net)
@@ -47,7 +51,7 @@ def AlexNet(input_shape=(224,224,3),classes=1000,include_top=True,weights=None):
         net = Dropout(0.5,name='dropout_2')(net)
         net = Dense(classes, activation='softmax',name='predictions')(net)
 
-    model = tf.keras.Model(input_img, net, name='AlexNet')
+    model = tf.keras.Model(input_, net, name='AlexNet')
 
     # load weights if necessary
     if weights != None:
@@ -57,6 +61,16 @@ def AlexNet(input_shape=(224,224,3),classes=1000,include_top=True,weights=None):
     return model
 
 if __name__=='__main__':
+
+    # set env and gpu
+    import tensorflow as tf
+    import os
+    os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
+    os.environ['CUDA_VISIBLE_DEVICES']='-1'
+
+    phy_gpus = tf.config.experimental.list_physical_devices('GPU')
+    for gpu in phy_gpus:
+        tf.config.experimental.set_memory_growth(gpu,True)
 
     # test model
     model = AlexNet(weights=None,input_shape=(224,224,3),include_top=True,classes=1000)
