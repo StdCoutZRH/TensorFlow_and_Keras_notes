@@ -1,12 +1,9 @@
-"""使用tf.keras 构建VGG模型
+"""VGG
 
-# 引用和参考：
+# References:
 - [Very Deep Convolutional Networks for Large-Scale Image Recognition](
     https://arxiv.org/abs/1409.1556) (ICLR 2015)
-- [vgg16.py](
-    https://github.com/keras-team/keras-applications/blob/master/keras_applications/vgg16.py)
-- [vgg19.py](
-    https://github.com/keras-team/keras-applications/blob/master/keras_applications/vgg19.py)
+
 """
 
 from tensorflow.keras.layers import *
@@ -15,15 +12,11 @@ from tensorflow.keras.optimizers import *
 from tensorflow.keras.utils import *
 
 # Build VGG16 with Keras Sequential Model
-def VGG16(input_shape=(224,224,3),classes=1000,include_top=True,weights=None):
-
-    # check weights path
-    if weights != None and not os.path.exists(weights):
-        raise ValueError("the input of weights is not valid")
+def VGG16(input_shape=(224,224,3),classes=1000,include_top=True):
 
     # check include_top and classes
     if include_top and classes!=1000:
-        raise ValueError("if include_top=True,classes should be 1000.")
+        raise ValueError("if include_top is True,classes should be 1000.")
 
     model = Sequential()
 
@@ -62,23 +55,14 @@ def VGG16(input_shape=(224,224,3),classes=1000,include_top=True,weights=None):
         model.add(Dense(4096,activation='relu',name='fc_layer2'))
         model.add(Dense(classes,activation='softmax',name='predictions_layer'))
 
-    # load weights if necessary
-    if weights == 'imagenet':
-        model.load_weights(weights_path)
-        print("Loading weigths from "+weights_path+" finished!")
-
     return model
 
 # Build VGG19 with Keras Functional API
-def VGG19(input_shape=(224,224,3),classes=1000,include_top=True,weights=None):
-
-    # check weights path
-    if weights != None and not os.path.exists(weights):
-        raise ValueError("the input of weights is not valid")
+def VGG19(input_shape=(224,224,3),classes=1000,include_top=True):
 
     # check include_top and classes
     if include_top and classes!=1000:
-        raise ValueError("if include_top=True,classes should be 1000.")
+        raise ValueError("if include_top is True,classes should be 1000.")
     
     input_ = tf.keras.Input(shape=input_shape)
     
@@ -118,18 +102,8 @@ def VGG19(input_shape=(224,224,3),classes=1000,include_top=True,weights=None):
         net = Dense(4096, activation='relu', name='fc1')(net)
         net = Dense(4096, activation='relu', name='fc2')(net)
         net = Dense(classes, activation='softmax', name='predictions')(net)
-    else:
-        if pooling == 'avg':
-            net = GlobalAveragePooling2D()(net)
-        elif pooling == 'max':
-            net = GlobalMaxPooling2D()(net)
 
     model = tf.keras.Model(input_, net, name='VGG19')
-
-    # load weights if necessary
-    if weights != None:
-        model.load_weights(weights)
-        print("Loading weigths from "+weights+" finished!")
 
     return model
 

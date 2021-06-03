@@ -1,8 +1,8 @@
-"""使用tf.keras functional api构建AlexNet模型
+"""AlexNet
 
-# 引用和参考：
+# References:
 - [ImageNet classification with deep convolutional neural networks](
-    https://www.onacademic.com/detail/journal_1000039913864210_2a08.html) 
+    https://proceedings.neurips.cc/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b-Paper.pdf) 
 
 """
 
@@ -12,15 +12,11 @@ from tensorflow.keras.optimizers import *
 from tensorflow.keras.utils import *
 
 # Build AlexNet with Keras Functional API
-def AlexNet(input_shape=(224,224,3),classes=1000,include_top=True,weights=None):
-
-    # check weights path
-    if weights != None and not os.path.exists(weights):
-        raise ValueError("the input of weights is not valid")
+def AlexNet(input_shape=(224,224,3),classes=1000,include_top=True):
 
     # check include_top and classes
     if include_top and classes!=1000:
-        raise ValueError("if include_top=True,classes should be 1000.")
+        raise ValueError("if include_top is True,classes should be 1000.")
 
     input_ = tf.keras.Input(shape=input_shape,dtype=tf.float32)
     net = ZeroPadding2D(padding=((1,2),(1,2)))(input_)
